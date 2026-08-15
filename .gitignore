@@ -1,0 +1,15 @@
+.DS_Store
+/.build/
+/build/
+/Vendor/lib/
+/Vendor/build/
+/Vendor/src/mpv/
+/TestMedia/generated/
+*.xcodeproj
+.swiftpm/
+xcuserdata/
+DerivedData/
+*.pyc
+__pycache__/
+*.dmg
+.idea/
