@@ -19,6 +19,9 @@ struct AboutView: View {
                 Button("GitHub") { NSWorkspace.shared.open(AppLinks.github) }
                 Button("License") { NSWorkspace.shared.open(AppLinks.license) }
             }
+            Button("Buy me a coffee") { NSWorkspace.shared.open(AppLinks.kofi) }
+                .buttonStyle(.link)
+                .font(.callout)
             Divider()
             ScrollView {
                 Text(Self.licenseText)

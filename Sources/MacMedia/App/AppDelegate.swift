@@ -128,6 +128,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSWorkspace.shared.open(AppLinks.issues)
     }
 
+    @objc func openKoFi() {
+        NSWorkspace.shared.open(AppLinks.kofi)
+    }
+
     @objc func showMediaInfo() {
         guard let player = keyPlayer() else { return }
         let controller = NSHostingController(rootView: MediaInfoView(coordinator: player.coordinator))

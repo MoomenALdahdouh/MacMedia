@@ -159,6 +159,8 @@ final class MenuBuilder {
             $0.addItem(targetItem("Website / GitHub", #selector(AppDelegate.openGitHub), ""))
             $0.addItem(targetItem("Download Latest…", #selector(AppDelegate.openReleases), ""))
             $0.addItem(targetItem("Report Issue…", #selector(AppDelegate.reportIssue), ""))
+            $0.addItem(.separator())
+            $0.addItem(targetItem("Buy Me a Coffee", #selector(AppDelegate.openKoFi), ""))
         }
         return item
     }

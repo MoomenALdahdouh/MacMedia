@@ -78,3 +78,7 @@ See [BUILD.md](BUILD.md). Runtime libraries are bundled inside the `.app`; Homeb
 ## License
 
 [GPL-3.0-or-later](LICENSE). Third-party notices: [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) and [NOTICE.md](NOTICE.md).
+
+## Support
+
+If MacMedia is useful, you can [buy me a coffee](https://ko-fi.com/moomenaldahdouh).

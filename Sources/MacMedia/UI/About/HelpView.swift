@@ -17,6 +17,9 @@ struct HelpView: View {
                 Button("Report Issue") { NSWorkspace.shared.open(AppLinks.issues) }
             }
             .controlSize(.large)
+            Button("Buy me a coffee") { NSWorkspace.shared.open(AppLinks.kofi) }
+                .buttonStyle(.link)
+                .font(.callout)
             Spacer(minLength: 0)
         }
         .padding(24)
