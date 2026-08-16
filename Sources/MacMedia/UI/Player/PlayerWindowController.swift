@@ -24,13 +24,14 @@ final class PlayerWindowController: NSWindowController, NSWindowDelegate, NSMenu
         self.videoView = VideoView(engine: coordinator.engine)
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 1080, height: 680),
-            styleMask: [.titled, .closable, .miniaturizable, .resizable],
+            styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
         window.title = "MacMedia"
-        window.titlebarAppearsTransparent = false
-        window.titleVisibility = .visible
+        window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden
+        window.titlebarSeparatorStyle = .none
         window.isMovableByWindowBackground = false
         window.minSize = NSSize(width: 720, height: 420)
         window.collectionBehavior.insert(.fullScreenPrimary)
@@ -76,7 +77,7 @@ final class PlayerWindowController: NSWindowController, NSWindowDelegate, NSMenu
         NSLayoutConstraint.activate([
             top.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             top.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            top.topAnchor.constraint(equalTo: container.topAnchor)
+            top.topAnchor.constraint(equalTo: container.safeAreaLayoutGuide.topAnchor)
         ])
         topBarHost = top
 
@@ -248,6 +249,28 @@ final class PlayerWindowController: NSWindowController, NSWindowDelegate, NSMenu
         centerHost?.isHidden = !showsCenterOverlay
         statsHost?.isHidden = !(coordinator.showStats && show)
         osdHost?.isHidden = coordinator.osdMessage == nil
+        applyWindowChrome(show: show)
+    }
+
+    private func applyWindowChrome(show: Bool) {
+        guard let window, !isPictureInPicture else { return }
+        window.titleVisibility = .hidden
+        window.titlebarAppearsTransparent = true
+        window.titlebarSeparatorStyle = .none
+        if !window.styleMask.contains(.fullSizeContentView) {
+            window.styleMask.insert(.fullSizeContentView)
+        }
+        window.standardWindowButton(.closeButton)?.isHidden = !show
+        window.standardWindowButton(.miniaturizeButton)?.isHidden = !show
+        window.standardWindowButton(.zoomButton)?.isHidden = !show
+    }
+
+    func hideChromeIfPlaying() {
+        hideTimer?.invalidate()
+        hideTimer = nil
+        guard coordinator.state.isPlaying, !coordinator.showPlaylist, coordinator.state.status != .error else { return }
+        coordinator.chromeVisible = false
+        applyChromeVisibility()
     }
 
     func togglePlaylist() {
@@ -321,9 +344,6 @@ final class PlayerWindowController: NSWindowController, NSWindowDelegate, NSMenu
         guard let window, let restore = pipRestore else { return }
         pipRestore = nil
         window.minSize = restore.minSize
-        window.titleVisibility = .visible
-        window.titlebarAppearsTransparent = false
-        window.styleMask.remove(.fullSizeContentView)
         window.isMovableByWindowBackground = false
         window.standardWindowButton(.closeButton)?.isHidden = false
         window.standardWindowButton(.miniaturizeButton)?.isHidden = false
@@ -469,6 +489,7 @@ final class PlayerWindowController: NSWindowController, NSWindowDelegate, NSMenu
 
     func windowDidExitFullScreen(_ notification: Notification) {
         NSCursor.unhide()
+        applyWindowChrome(show: showsChrome)
         if pendingPiP {
             pendingPiP = false
             enterPiP()
@@ -609,7 +630,9 @@ final class PlayerContainerView: NSView {
     }
 
     override func mouseExited(with event: NSEvent) {
-        (window?.windowController as? PlayerWindowController)?.hidePiPHoverControls()
+        let controller = window?.windowController as? PlayerWindowController
+        controller?.hidePiPHoverControls()
+        controller?.hideChromeIfPlaying()
     }
 
     override func updateTrackingAreas() {

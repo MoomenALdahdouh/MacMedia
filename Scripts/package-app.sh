@@ -10,10 +10,13 @@ FW="$CONTENTS/Frameworks"
 RES="$CONTENTS/Resources"
 IDENTITY="${CODESIGN_IDENTITY:-}"
 if [[ -z "$IDENTITY" ]]; then
-  if security find-identity -v -p codesigning | grep -q "Developer ID Application"; then
-    IDENTITY="$(security find-identity -v -p codesigning | awk -F'"' '/Developer ID Application/ {print $2; exit}')"
-  elif security find-identity -v -p codesigning | grep -q "Apple Development"; then
-    IDENTITY="$(security find-identity -v -p codesigning | awk -F'"' '/Apple Development/ {print $2; exit}')"
+  LIST="$(security find-identity -v -p codesigning)"
+  if echo "$LIST" | grep -q "Developer ID Application"; then
+    IDENTITY="$(echo "$LIST" | awk -F'"' '/Developer ID Application/ {print $2; exit}')"
+  elif echo "$LIST" | grep -F -q "Apple Development: moomenaldahdouh@gmail.com"; then
+    IDENTITY="$(echo "$LIST" | awk -F'"' '/Apple Development: moomenaldahdouh@gmail.com/ {print $2; exit}')"
+  elif echo "$LIST" | grep -q "Apple Development"; then
+    IDENTITY="$(echo "$LIST" | awk -F'"' '/Apple Development/ {print $2; exit}')"
   fi
 fi
 
