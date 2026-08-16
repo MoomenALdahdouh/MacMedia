@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="Resources/AppIcon.iconset/icon_256x256.png" alt="MacMedia icon" width="128" height="128">
+</p>
+
 <h1 align="center">MacMedia</h1>
 
 <p align="center">Native macOS media player with a bundled libmpv engine.</p>
