@@ -1,84 +1,100 @@
-# MacMedia
+<h1 align="center">MacMedia</h1>
 
-A fast, simple native media player for macOS (Apple Silicon).
+<p align="center">Native macOS media player with a bundled libmpv engine.</p>
 
-Open a file, watch it, and get out of the way. No accounts, ads, telemetry, or cloud. Playback is powered by a bundled [libmpv](https://mpv.io) engine (FFmpeg, VideoToolbox, libass).
+<p align="center">
+  <a href="https://github.com/MoomenALdahdouh/MacMedia/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/MoomenALdahdouh/MacMedia/ci.yml?branch=master&label=build" alt="Build"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0--or--later-blue" alt="License"></a>
+  <a href="https://github.com/MoomenALdahdouh/MacMedia/releases/latest"><img src="https://img.shields.io/github/v/release/MoomenALdahdouh/MacMedia" alt="Release"></a>
+  <img src="https://img.shields.io/badge/macOS-13%2B-black" alt="macOS 13+">
+  <img src="https://img.shields.io/badge/arch-arm64-lightgrey" alt="arm64">
+</p>
 
-[Download for macOS](https://github.com/MoomenALdahdouh/MacMedia/releases/latest) · [How to open](#first-launch-on-macos) · [Build from source](BUILD.md)
+---
 
-**Requires:** macOS 13 Ventura or later, Apple Silicon (M1/M2/M3/M4). This release is arm64 only.
+## Overview
+
+MacMedia is a native AppKit player for Apple Silicon. The UI stays small; playback is delegated to vendored [libmpv](https://mpv.io) (FFmpeg, VideoToolbox, libass). No accounts, ads, telemetry, or network requirement at runtime.
 
 <p align="center">
   <img src="docs/images/window-player.png" alt="MacMedia player window" width="880">
 </p>
 
-<p align="center"><em>The real MacMedia window on macOS, with the standard control bar.</em></p>
+## Installation
 
+### Binary (recommended)
 
-## Install
-
-1. Download **MacMedia.dmg** from the [latest release](https://github.com/MoomenALdahdouh/MacMedia/releases/latest).
-2. Open the disk image and drag **MacMedia** into **Applications**.
-3. Eject the disk image, then launch MacMedia from Applications.
-
-### First launch on macOS
-
-macOS Gatekeeper may block the first open because this build is not notarized with an Apple Developer ID. That is expected.
-
-**Easiest:** in Finder, **right-click MacMedia → Open**, then click **Open**.
-
-If macOS still refuses:
+Download **MacMedia.dmg** from the [latest release](https://github.com/MoomenALdahdouh/MacMedia/releases/latest), then:
 
 ```bash
+# Drag MacMedia.app into /Applications, then clear Gatekeeper quarantine
 xattr -dr com.apple.quarantine /Applications/MacMedia.app
+open /Applications/MacMedia.app
 ```
 
-Then right-click → **Open** again.
+First launch: **right-click → Open** if macOS still blocks the app. The build is signed for development and is not Apple-notarized.
+
+Requires macOS 13+ on Apple Silicon (arm64 only).
+
+### From source
+
+```bash
+git clone https://github.com/MoomenALdahdouh/MacMedia.git
+cd MacMedia
+
+brew install meson ninja pkgconf ffmpeg libass libplacebo little-cms2 uchardet zimg libarchive jpeg-turbo
+
+Scripts/vendor-libs.sh
+swift build -c release --product MacMedia
+Scripts/package-app.sh
+Scripts/install.sh
+```
+
+Homebrew is a **build-time** dependency only. The packaged `.app` vendors libmpv and FFmpeg dylibs under `@rpath`.
 
 ## Usage
 
-- Drop a file on the window, choose **File → Open**, or press ⌘O
-- Space play/pause, arrow keys seek, ↑/↓ volume, F fullscreen, Esc exit fullscreen
-- Right-click the video for a compact menu
-- **Settings** for hardware decoding, equalizer, shortcuts, and more
-- **File → New Window** to play more than one file at once
-
-### Keyboard shortcuts
-
-Defaults (customizable in Settings → Keyboard):
+Open a file with ⌘O, drag-and-drop, or `open -a MacMedia ./clip.mp4`.
 
 | Key | Action |
 | --- | --- |
-| Space | Play / Pause / Replay |
-| Left / Right | Seek |
-| Shift+Left / Right | Larger seek |
-| Up / Down | Volume |
+| Space | Play / pause / replay |
+| ← → | Seek |
+| ⇧← ⇧→ | Larger seek |
+| ↑ ↓ | Volume |
 | M | Mute |
 | F | Fullscreen |
-| Esc | Exit fullscreen |
-| S | Screenshot (saved to Pictures/MacMedia) |
+| S | Screenshot (`~/Pictures/MacMedia`) |
+| ⌘N | New window |
 
-## Features
+Chrome (title bar, file info, controls) auto-hides together while a file is playing; hover to show it again. Defaults are editable in **Settings → Keyboard**.
 
-- Native macOS window with auto-hiding controls and an optional compact (Clean) view
-- Broad format coverage through libmpv/FFmpeg (MP4, MKV, MOV, WebM, MP3, AAC, FLAC, Opus, H.264, HEVC, and more)
-- Hardware decoding via VideoToolbox, with software fallback
-- Playlist, history, and optional resume
-- Subtitles (including sidecar `.srt` / `.ass`), audio tracks, speed, A-B loop
-- Equalizer, color controls, screenshots, statistics overlay
-- Picture-in-Picture as a compact always-on-top window
-- HTTP/HTTPS streaming supported by the engine
+## Development
 
-Unsupported or damaged files show an error instead of crashing. MacMedia does not claim every format ever created.
+```bash
+Scripts/vendor-libs.sh          # clone mpv 0.41.0 and build libmpv
+swift build -c debug --product MacMedia
+Scripts/gen-test-media.sh
+Scripts/run-tests.sh
+Scripts/package-app.sh          # build/MacMedia.app
+Scripts/package-dmg.sh          # build/MacMedia.dmg
+```
 
-## Build from source
+Layout:
 
-See [BUILD.md](BUILD.md). Runtime libraries are bundled inside the `.app`; Homebrew is only needed when compiling.
+```text
+Sources/MacMedia          AppKit / SwiftUI UI
+Sources/MacMediaCore      coordinator, playlist, preferences, MpvEngine
+Sources/CMpv              libmpv C module
+Vendor/                   generated libmpv (not committed)
+```
+
+See [BUILD.md](BUILD.md), [CONTRIBUTING.md](CONTRIBUTING.md), and [Documentation/ARCHITECTURE.md](Documentation/ARCHITECTURE.md).
 
 ## License
 
-[GPL-3.0-or-later](LICENSE). Third-party notices: [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) and [NOTICE.md](NOTICE.md).
+GPL-3.0-or-later ([LICENSE](LICENSE)). Bundled libmpv / FFmpeg / libass keep their own terms; see [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) and [NOTICE.md](NOTICE.md).
 
 ## Support
 
-If MacMedia is useful, you can [buy me a coffee](https://ko-fi.com/moomenaldahdouh).
+[Buy me a coffee](https://ko-fi.com/moomenaldahdouh)
