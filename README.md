@@ -8,6 +8,13 @@ Open a file, watch it, and get out of the way. No accounts, ads, telemetry, or c
 
 **Requires:** macOS 13 Ventura or later, Apple Silicon (M1/M2/M3/M4). This release is arm64 only.
 
+<p align="center">
+  <img src="docs/images/window-player.png" alt="MacMedia player window" width="880">
+</p>
+
+<p align="center"><em>The real MacMedia window on macOS, with the standard control bar.</em></p>
+
+
 ## Install
 
 1. Download **MacMedia.dmg** from the [latest release](https://github.com/MoomenALdahdouh/MacMedia/releases/latest).
