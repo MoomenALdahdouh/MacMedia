@@ -1,76 +1,73 @@
 # MacMedia
 
-A fast, simple, and powerful native media player for macOS.
+A fast, simple native media player for macOS (Apple Silicon).
 
-MacMedia follows a simple idea: **simple interface, powerful engine**. Open a file, watch it, and get out of the way. Advanced controls live in menus and Settings.
+Open a file, watch it, and get out of the way. No accounts, ads, telemetry, or cloud. Playback is powered by a bundled [libmpv](https://mpv.io) engine (FFmpeg, VideoToolbox, libass).
 
-It is inspired by the usability philosophy of MPC-HC, not by its branding or artwork. Playback is handled by a bundled **libmpv** (FFmpeg, VideoToolbox, libass).
+[Download for macOS](https://github.com/MoomenALdahdouh/MacMedia/releases/latest) · [How to open](#first-launch-on-macos) · [Build from source](BUILD.md)
 
-## Features
+**Requires:** macOS 13 Ventura or later, Apple Silicon (M1/M2/M3/M4). This release is arm64 only.
 
-- Native macOS player window with auto-hiding controls
-- Broad container/codec coverage through libmpv/FFmpeg (actual support is reported by the engine)
-- Hardware decoding via VideoToolbox, with software fallback
-- Playlist, history, and optional resume
-- Subtitles (including sidecar files), audio tracks, playback speed, A-B loop
-- Equalizer, color controls, screenshots, statistics overlay
-- Keyboard and mouse customization
-- HTTP/HTTPS streaming supported by the engine
-- No accounts, ads, telemetry, or cloud dependency
+## Install
 
-## Requirements
+1. Download **MacMedia.dmg** from the [latest release](https://github.com/MoomenALdahdouh/MacMedia/releases/latest).
+2. Open the disk image and drag **MacMedia** into **Applications**.
+3. Eject the disk image, then launch MacMedia from Applications.
 
-- macOS 13 Ventura or newer
-- Apple Silicon (arm64). This build is **not** Universal 2.
+### First launch on macOS
 
-## Installation
+macOS Gatekeeper may block the first open because this build is not notarized with an Apple Developer ID. That is expected.
 
-1. Open `build/MacMedia.dmg`
-2. Drag **MacMedia** into **Applications**
-3. Launch it and open a media file
+**Easiest:** in Finder, **right-click MacMedia → Open**, then click **Open**.
 
-If Gatekeeper blocks the unsigned / development-signed build:
+If macOS still refuses:
 
 ```bash
 xattr -dr com.apple.quarantine /Applications/MacMedia.app
 ```
 
-Then right-click the app and choose **Open**.
+Then right-click → **Open** again.
 
 ## Usage
 
-- Drop a file on the window, use **File → Open**, or press ⌘O
-- Space play/pause, arrows seek, up/down volume, F fullscreen, Esc exit fullscreen
-- Right-click the video for a compact context menu
-- Open **Settings** for hardware decoding, equalizer, shortcuts, and more
+- Drop a file on the window, choose **File → Open**, or press ⌘O
+- Space play/pause, arrow keys seek, ↑/↓ volume, F fullscreen, Esc exit fullscreen
+- Right-click the video for a compact menu
+- **Settings** for hardware decoding, equalizer, shortcuts, and more
+- **File → New Window** to play more than one file at once
 
-## Keyboard shortcuts
+### Keyboard shortcuts
 
-Defaults (all customizable in Settings → Keyboard):
+Defaults (customizable in Settings → Keyboard):
 
 | Key | Action |
 | --- | --- |
-| Space | Play/Pause |
+| Space | Play / Pause / Replay |
 | Left / Right | Seek |
 | Shift+Left / Right | Larger seek |
 | Up / Down | Volume |
 | M | Mute |
 | F | Fullscreen |
 | Esc | Exit fullscreen |
-| S | Screenshot |
+| S | Screenshot (saved to Pictures/MacMedia) |
 
-## Supported media
+## Features
 
-MacMedia plays the formats supported by the bundled libmpv/FFmpeg build. Typical coverage includes MP4, MKV, MOV, WebM, MP3, AAC, FLAC, Opus, H.264, HEVC, and more. The player does **not** claim every format ever created. Unsupported or damaged files show a human-readable error instead of crashing.
+- Native macOS window with auto-hiding controls and an optional compact (Clean) view
+- Broad format coverage through libmpv/FFmpeg (MP4, MKV, MOV, WebM, MP3, AAC, FLAC, Opus, H.264, HEVC, and more)
+- Hardware decoding via VideoToolbox, with software fallback
+- Playlist, history, and optional resume
+- Subtitles (including sidecar `.srt` / `.ass`), audio tracks, speed, A-B loop
+- Equalizer, color controls, screenshots, statistics overlay
+- Picture-in-Picture as a compact always-on-top window
+- HTTP/HTTPS streaming supported by the engine
 
-## Known limitations
+Unsupported or damaged files show an error instead of crashing. MacMedia does not claim every format ever created.
 
-- arm64 only (Homebrew FFmpeg on this machine is arm64)
-- OpenGL rendering path (`CAOpenGLLayer` + libmpv). Metal shaders are not compiled in this toolchain.
-- Signed with an Apple Development identity when available; **not notarized** (no Developer ID Application certificate)
-- No in-app updater
-- Picture-in-picture is a compact always-on-top panel, not AVKit PiP
+## Build from source
+
+See [BUILD.md](BUILD.md). Runtime libraries are bundled inside the `.app`; Homebrew is only needed when compiling.
 
 ## License
 
-GPL-3.0-or-later. Third-party notices: [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md)
+[GPL-3.0-or-later](LICENSE). Third-party notices: [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) and [NOTICE.md](NOTICE.md).

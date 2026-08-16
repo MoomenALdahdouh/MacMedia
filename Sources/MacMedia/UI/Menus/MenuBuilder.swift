@@ -154,7 +154,11 @@ final class MenuBuilder {
     private func helpMenu() -> NSMenuItem {
         let item = NSMenuItem()
         item.submenu = named("Help") {
-            $0.addItem(menuItem("MacMedia Help", nil, "?", command: true, action: #selector(NSApplication.showHelp(_:))))
+            $0.addItem(targetItem("MacMedia Help", #selector(AppDelegate.showHelpWindow), "?", command: true))
+            $0.addItem(.separator())
+            $0.addItem(targetItem("Website / GitHub", #selector(AppDelegate.openGitHub), ""))
+            $0.addItem(targetItem("Download Latest…", #selector(AppDelegate.openReleases), ""))
+            $0.addItem(targetItem("Report Issue…", #selector(AppDelegate.reportIssue), ""))
         }
         return item
     }

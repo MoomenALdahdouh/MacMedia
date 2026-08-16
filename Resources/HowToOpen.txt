@@ -1,0 +1,20 @@
+MacMedia — first launch on macOS
+================================
+
+1. Drag MacMedia into Applications.
+2. Open the Applications folder.
+3. Right-click MacMedia and choose Open.
+4. Click Open in the dialog.
+
+macOS may warn that the app is from an unidentified developer. That happens
+because this build is not Apple-notarized. Right-click → Open is the normal
+way to allow it on your Mac.
+
+If it is still blocked, open Terminal and run:
+
+  xattr -dr com.apple.quarantine /Applications/MacMedia.app
+
+Then right-click → Open again.
+
+Source, license, and updates:
+https://github.com/MoomenALdahdouh/MacMedia

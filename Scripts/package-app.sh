@@ -8,7 +8,14 @@ CONTENTS="$APP/Contents"
 MACOS="$CONTENTS/MacOS"
 FW="$CONTENTS/Frameworks"
 RES="$CONTENTS/Resources"
-IDENTITY="${CODESIGN_IDENTITY:-Apple Development: moomenaldahdouh@gmail.com (NS9S9TNXA7)}"
+IDENTITY="${CODESIGN_IDENTITY:-}"
+if [[ -z "$IDENTITY" ]]; then
+  if security find-identity -v -p codesigning | grep -q "Developer ID Application"; then
+    IDENTITY="$(security find-identity -v -p codesigning | awk -F'"' '/Developer ID Application/ {print $2; exit}')"
+  elif security find-identity -v -p codesigning | grep -q "Apple Development"; then
+    IDENTITY="$(security find-identity -v -p codesigning | awk -F'"' '/Apple Development/ {print $2; exit}')"
+  fi
+fi
 
 cd "$ROOT"
 if [[ ! -f "$ROOT/Vendor/lib/libmpv.dylib" && ! -f "$ROOT/Vendor/lib/libmpv.2.dylib" ]]; then
@@ -27,6 +34,12 @@ cp "$ROOT/Resources/Info.plist" "$CONTENTS/Info.plist"
 echo -n "APPL????" > "$CONTENTS/PkgInfo"
 cp "$ROOT/LICENSE" "$RES/LICENSE"
 cp "$ROOT/THIRD_PARTY_LICENSES.md" "$RES/THIRD_PARTY_LICENSES.md"
+if [[ -f "$ROOT/NOTICE.md" ]]; then
+  cp "$ROOT/NOTICE.md" "$RES/NOTICE.md"
+fi
+if [[ -f "$ROOT/Resources/HowToOpen.txt" ]]; then
+  cp "$ROOT/Resources/HowToOpen.txt" "$RES/HowToOpen.txt"
+fi
 if [[ -d "$ROOT/Resources/Licenses" ]]; then
   cp -R "$ROOT/Resources/Licenses" "$RES/Licenses"
 fi
@@ -59,12 +72,12 @@ fi
 
 chmod +x "$MACOS/MacMedia"
 
-if security find-identity -v -p codesigning | grep -q "$IDENTITY"; then
+if [[ -n "$IDENTITY" ]] && security find-identity -v -p codesigning | grep -F -q "$IDENTITY"; then
   codesign --force --deep --sign "$IDENTITY" --timestamp --options runtime "$APP" || codesign --force --deep --sign "$IDENTITY" "$APP"
   echo "SIGNED with $IDENTITY"
 else
   codesign --force --deep --sign - "$APP"
-  echo "SIGNED ad-hoc (no matching Apple Development identity)"
+  echo "SIGNED ad-hoc (no matching codesigning identity)"
 fi
 
 echo "Built $APP"

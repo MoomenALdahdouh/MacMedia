@@ -15,38 +15,30 @@ Playback logic does not live in SwiftUI views. Views observe `PlaybackCoordinato
 
 ## Threading
 
-- libmpv calls run on a dedicated serial `player` queue.
+- libmpv calls run on a dedicated serial queue.
 - `mpv_set_wakeup_callback` hops onto that queue and drains `mpv_wait_event(0)`.
 - UI state is published on the main actor.
-- Filesystem scans, M3U parsing, and history IO use cooperative Swift concurrency off the main thread.
+- Screenshots read the OpenGL framebuffer on the display thread (libmpv `screenshot-to-file` is unsafe with `vo=libmpv`).
 
 ## Rendering
 
-Video is drawn with `vo=libmpv` into a `CAOpenGLLayer` via `mpv_render_context_render`. This is the proven embedding path on macOS (IINA / libmpv examples). Custom Metal shaders are not used because this environment has Command Line Tools only (no `metal` compiler).
-
-Hardware decoding uses mpv `hwdec` (`auto` / `videotoolbox` / `no`) and falls back to software if VideoToolbox fails.
+Video is drawn with `vo=libmpv` into a `CAOpenGLLayer` via `mpv_render_context_render`. Hardware decoding uses mpv `hwdec` (`auto` / `videotoolbox` / `no`) and falls back to software if VideoToolbox fails.
 
 ## Safety defaults
 
 - `load-scripts=no`
 - `ytdl=no`
 - Lua and JavaScript are disabled in the libmpv build
-- The app is not App Sandboxed (Finder / arbitrary paths / HTTP(S) streams)
+- The app is not App Sandboxed (Finder paths and HTTP(S) streams)
 
 ## Persistence
 
-UserDefaults + a small Codable JSON store under Application Support:
+UserDefaults plus a small Codable JSON store under Application Support:
 
 - window frame, volume, speed, settings
 - history and resume positions (when enabled)
 - optional remembered playlist
 
-Decoder / renderer state is never persisted.
-
-## Updates
-
-`UpdateChecking` is a no-op protocol so an updater can be added later without touching playback.
-
 ## License
 
-The application is GPL-3.0-or-later because it bundles GPL-configured FFmpeg and libmpv. See `THIRD_PARTY_LICENSES.md`.
+GPL-3.0-or-later because the distribution includes GPL-configured FFmpeg and libmpv. See `LICENSE`, `NOTICE.md`, and `THIRD_PARTY_LICENSES.md`.

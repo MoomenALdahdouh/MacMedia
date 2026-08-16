@@ -1,14 +1,15 @@
 # Testing MacMedia
 
-## Unit tests
+## Unit and engine tests
 
-Command Line Tools on this machine do not include `xctest`. Run:
+Command Line Tools do not always include `xctest`. Run:
 
 ```bash
+Scripts/gen-test-media.sh
 Scripts/run-tests.sh
 ```
 
-The `MacMediaTestRunner` executable covers:
+`MacMediaTestRunner` covers:
 
 - Time formatting
 - File type detection including Unicode names
@@ -19,57 +20,26 @@ The `MacMediaTestRunner` executable covers:
 - Equalizer filter generation
 - History
 - Error mapping
-
-## Integration tests
-
-`EngineIntegrationTests` start a **headless** libmpv (`vo=null`, `ao=null`) and:
-
-- Open generated H.264
-- Seek, pause, volume, speed
-- Missing file → error, no crash
-- Corrupt / empty files
-- Hardware decoding toggles
-
-Generate fixtures first (original synthetic media, not copyrighted downloads):
-
-```bash
-Scripts/gen-test-media.sh
-```
-
-## Stress tests
-
-Rapid playlist next/previous on 200 items.
-
-Additional manual / scripted stress (open the `.app`):
-
-- Rapid seek and play/pause
-- Enter/exit fullscreen repeatedly
-- Delete the current file while playing
-- Toggle hardware decoding during playback
+- Headless libmpv open / seek / pause / missing and corrupt files
+- Playlist stress (200 items)
 
 ## UI tests
 
-There is no Xcode XCUITest host on the Command Line Tools toolchain. Coverage for the real app is:
+There is no XCUITest host in a Command Line Tools-only setup. Coverage for the real app is:
 
 ```bash
 Scripts/package-app.sh
 open build/MacMedia.app
 ```
 
-plus `Scripts/launch-smoke.sh` which launches the app and checks the process.
+`Scripts/launch-smoke.sh` launches the app and checks the process.
 
-## Media test corpus
+## Media corpus
 
-Documented in `TestMedia/README.md`. Generated coverage:
+Documented in `TestMedia/README.md`. Generated locally with ffmpeg test patterns (not copyrighted):
 
 - H.264 / HEVC / AAC / MP3 / FLAC / Opus / MKV / MP4 / SRT
 - Unicode filenames
 - Empty, random binary, and truncated files
 
-Not generated here (encoders or sample assets unavailable / not redistributable):
-
-- ProRes
-- HDR10 mastering display metadata
-- Commercial 4K60 feature files
-
-Supply those locally if you need them. Do not download copyrighted media.
+Supply ProRes, HDR, or long 4K files locally if you need them. Do not download copyrighted media.

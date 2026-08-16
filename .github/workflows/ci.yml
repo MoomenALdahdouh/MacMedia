@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  scripts:
+    name: Script sanity
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Shellcheck packaging scripts
+        run: |
+          bash -n Scripts/package-app.sh
+          bash -n Scripts/package-dmg.sh
+          bash -n Scripts/vendor-libs.sh
+          bash -n Scripts/install.sh
+          bash -n Scripts/run-tests.sh
+          test -f LICENSE
+          test -f README.md
+          test -f Resources/Info.plist

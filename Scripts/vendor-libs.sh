@@ -9,8 +9,12 @@ LIB="$VENDOR/lib"
 INCLUDE="$VENDOR/include"
 BUILD="$VENDOR/build/mpv"
 
-export PATH="/opt/homebrew/bin:$PATH"
-export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/opt/homebrew/opt/libarchive/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+if [[ -d /opt/homebrew/lib/pkgconfig ]]; then
+  export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/opt/homebrew/opt/libarchive/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+elif [[ -d /usr/local/lib/pkgconfig ]]; then
+  export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+fi
 export MACOSX_DEPLOYMENT_TARGET="${MACOSX_DEPLOYMENT_TARGET:-13.0}"
 
 mkdir -p "$VENDOR/src" "$LIB" "$INCLUDE" "$BUILD"

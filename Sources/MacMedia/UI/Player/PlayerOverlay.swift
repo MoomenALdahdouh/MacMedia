@@ -89,9 +89,9 @@ struct PlayerCenterOverlay: View {
             Image(systemName: "play.rectangle.fill")
                 .font(.system(size: 44, weight: .regular))
                 .foregroundStyle(.secondary)
-            Text("Open a video or audio file")
+            Text("Drop a video here")
                 .font(.title2.weight(.semibold))
-            Text("MacMedia is a local media player. Nothing is uploaded.")
+            Text("Or open a file. MacMedia stays on your Mac — nothing is uploaded.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
             HStack(spacing: 10) {

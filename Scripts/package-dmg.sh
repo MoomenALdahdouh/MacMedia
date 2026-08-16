@@ -18,6 +18,10 @@ ln -s /Applications "$STAGE/Applications"
 cp "$ROOT/README.md" "$STAGE/README.md"
 cp "$ROOT/LICENSE" "$STAGE/LICENSE"
 cp "$ROOT/THIRD_PARTY_LICENSES.md" "$STAGE/THIRD_PARTY_LICENSES.md"
+cp "$ROOT/Resources/HowToOpen.txt" "$STAGE/How to Open.txt"
+if [[ -f "$ROOT/NOTICE.md" ]]; then
+  cp "$ROOT/NOTICE.md" "$STAGE/NOTICE.md"
+fi
 
 hdiutil create -volname "MacMedia" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
 echo "Created $DMG"

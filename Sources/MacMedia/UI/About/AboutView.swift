@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 import MacMediaCore
 
@@ -9,14 +10,15 @@ struct AboutView: View {
                 .frame(width: 64, height: 64)
             Text("MacMedia")
                 .font(.title)
-            Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")")
+            Text("Version \(versionString)")
                 .foregroundStyle(.secondary)
-            Text("A fast, simple and powerful media player for macOS.")
+            Text("A fast, simple media player for macOS.\nNothing is uploaded. No accounts or ads.")
                 .multilineTextAlignment(.center)
-            Text("Simple interface. Powerful engine. Native Mac experience.")
-                .font(.callout)
                 .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
+            HStack(spacing: 10) {
+                Button("GitHub") { NSWorkspace.shared.open(AppLinks.github) }
+                Button("License") { NSWorkspace.shared.open(AppLinks.license) }
+            }
             Divider()
             ScrollView {
                 Text(Self.licenseText)
@@ -26,7 +28,16 @@ struct AboutView: View {
             }
         }
         .padding(20)
-        .frame(width: 420, height: 360)
+        .frame(width: 440, height: 400)
+    }
+
+    private var versionString: String {
+        let short = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
+        if let build, build != short {
+            return "\(short) (\(build))"
+        }
+        return short
     }
 
     private static var licenseText: String {
@@ -35,7 +46,7 @@ struct AboutView: View {
            let text = try? String(contentsOf: url) {
             return text
         }
-        return "MacMedia is licensed under GPL-3.0-or-later.\nThird-party notices ship with the application."
+        return "MacMedia is licensed under GPL-3.0-or-later."
     }
 }
 

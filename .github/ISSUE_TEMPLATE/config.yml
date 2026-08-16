@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Download MacMedia
+    url: https://github.com/MoomenALdahdouh/MacMedia/releases/latest
+    about: Get the latest MacMedia.dmg for Apple Silicon.
+  - name: How to open the app
+    url: https://github.com/MoomenALdahdouh/MacMedia#first-launch-on-macos
+    about: Gatekeeper steps if macOS blocks the first launch.

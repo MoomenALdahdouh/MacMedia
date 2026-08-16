@@ -10,6 +10,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var playerWindows: [PlayerWindowController] = []
     private var settingsWindow: SettingsWindowController?
     private var aboutWindow: NSWindow?
+    private var helpWindow: NSWindow?
     private var mediaInfoWindow: NSWindow?
     private var menuBuilder: MenuBuilder?
     private var didFinishLaunching = false
@@ -97,10 +98,34 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             let window = NSWindow(contentViewController: controller)
             window.styleMask = [.titled, .closable]
             window.title = "About MacMedia"
-            window.setContentSize(NSSize(width: 420, height: 360))
+            window.setContentSize(NSSize(width: 440, height: 400))
             aboutWindow = window
         }
         aboutWindow?.makeKeyAndOrderFront(nil)
+    }
+
+    @objc func showHelpWindow() {
+        if helpWindow == nil {
+            let controller = NSHostingController(rootView: HelpView())
+            let window = NSWindow(contentViewController: controller)
+            window.styleMask = [.titled, .closable]
+            window.title = "MacMedia Help"
+            window.setContentSize(NSSize(width: 440, height: 420))
+            helpWindow = window
+        }
+        helpWindow?.makeKeyAndOrderFront(nil)
+    }
+
+    @objc func openGitHub() {
+        NSWorkspace.shared.open(AppLinks.github)
+    }
+
+    @objc func openReleases() {
+        NSWorkspace.shared.open(AppLinks.releases)
+    }
+
+    @objc func reportIssue() {
+        NSWorkspace.shared.open(AppLinks.issues)
     }
 
     @objc func showMediaInfo() {
